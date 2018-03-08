@@ -55,6 +55,22 @@ class App extends Component<Props, State> {
     this.setState({ message: 'Entry successfully received!' })
   }
 
+  handleClick = async (event: Object) => {
+    const accounts = await web3.eth.getAccounts()
+
+    if (!accounts.length) {
+      return this.setState({ message: 'ERROR: No accounts found. Is metamask running and authenticated?' })
+    }
+
+    this.setState({ message: 'Sending transaction...' })
+
+    await lottery.methods.pickWinner().send({
+      from: accounts[0]
+    })
+
+    this.setState({ message: 'Winner successfully picked!' })
+  }
+
   render() {
     const { manager, players, balance } = this.state
 
@@ -77,6 +93,11 @@ class App extends Component<Props, State> {
           </div>
           <button>Enter</button>
         </form>
+
+        <hr />
+
+        <h3>Pick a winner</h3>
+        <button onClick={this.handleClick}>Pick Winner</button>
 
         <hr />
 
